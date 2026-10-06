@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Permit Register</title>
+  <link rel="icon" href="data:,">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div>
+      <p class="kicker">Reference implementation</p>
+      <h1>Permit Register</h1>
+    </div>
+    <label class="who">Recording as
+      <input id="who" type="text" autocomplete="name" placeholder="Your name">
+    </label>
+  </div>
+  <nav class="tabs" aria-label="Sections">
+    <button type="button" data-tab="equipment" aria-selected="true">Equipment</button>
+    <button type="button" data-tab="permits">Permits</button>
+    <button type="button" data-tab="log">Log</button>
+    <button type="button" data-tab="setup">Equipment list</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <p class="boot" id="boot">Starting the database…</p>
+
+  <div class="hint" id="hint" hidden></div>
+
+  <!-- Equipment ─────────────────────────────────── -->
+  <section class="tab" id="tab-equipment" hidden>
+    <div class="split">
+      <aside class="list" id="eqList" aria-label="Equipment"></aside>
+      <div class="screen-pane" id="eqScreen"></div>
+    </div>
+  </section>
+
+  <!-- Permits ───────────────────────────────────── -->
+  <section class="tab" id="tab-permits" hidden>
+    <div class="split">
+      <aside class="list" id="permitList" aria-label="Permits"></aside>
+      <div class="screen-pane" id="permitScreen"></div>
+    </div>
+  </section>
+
+  <!-- Log ───────────────────────────────────────── -->
+  <section class="tab" id="tab-log" hidden>
+    <div class="card" id="chainCard"></div>
+
+    <div class="card">
+      <h2>What was open at a past moment</h2>
+      <p class="sub">"When it happened" uses the time on the record. "What the system knew" uses the time the database received it. A record entered late appears in the first and not the second.</p>
+      <form class="row" id="asOfForm">
+        <label>Moment <input type="datetime-local" id="asOf" required></label>
+        <label>By
+          <select id="asOfMode">
+            <option value="happened">When it happened</option>
+            <option value="known">What the system knew</option>
+          </select>
+        </label>
+        <button type="submit" class="btn">Show</button>
+      </form>
+      <div id="asOfResult"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Every record, in the order received</h2>
+        <button type="button" class="btn ghost" id="exportCsv">Download CSV</button>
+      </div>
+      <p class="sub">Nothing here can be edited or deleted. A correction is a new record.</p>
+      <div class="scroll" id="logTable"></div>
+    </div>
+  </section>
+
+  <!-- Equipment list ────────────────────────────── -->
+  <section class="tab" id="tab-setup" hidden>
+    <div class="card">
+      <h2>Equipment list</h2>
+      <p class="sub">In production this list is read from your maintenance system (CMMS) by tag number. Permit users pick from it; they never type equipment names. "Belongs to" is what makes a check on a pump include its relief valve.</p>
+      <div class="scroll" id="assetTable"></div>
+      <form class="row" id="assetForm">
+        <label>Tag <input id="newTag" required maxlength="50" placeholder="P-201"></label>
+        <label>Description <input id="newDesc" placeholder="Transfer pump"></label>
+        <label>Location <input id="newLoc" placeholder="Tank farm"></label>
+        <label>Belongs to <select id="newParent"></select></label>
+        <button type="submit" class="btn">Add</button>
+      </form>
+      <p class="msg" id="assetMsg"></p>
+    </div>
+
+    <div class="card">
+      <h2>Equipment that belongs to more than one thing</h2>
+      <p class="sub">A relief valve on a shared header protects every pump on it. Add each extra owner here.</p>
+      <div id="linkTable"></div>
+      <form class="row" id="linkForm">
+        <label>Equipment <select id="linkChild"></select></label>
+        <label>Also belongs to <select id="linkOwner"></select></label>
+        <button type="submit" class="btn">Add link</button>
+      </form>
+      <p class="msg" id="linkMsg"></p>
+    </div>
+
+    <div class="card">
+      <h2>Data</h2>
+      <p class="sub" id="storeNote"></p>
+      <div class="row">
+        <button type="button" class="btn" id="loadExample">Load the example</button>
+        <button type="button" class="btn ghost" id="showSteps">Show the example steps</button>
+        <button type="button" class="btn ghost danger" id="wipe">Clear everything</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>A reference implementation of the data model in <em>Your Permit System Files Documents. The Hazard Sits on the Equipment.</em> It runs PostgreSQL inside your browser; the permit rules are database triggers, so the page cannot skip them. It is not a certified permit-to-work system and has not been used on a site. Records stay in this browser.</p>
+  </footer>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlgForm">
+    <h2 id="dlgTitle"></h2>
+    <div id="dlgBody"></div>
+    <p class="error" id="dlgError" role="alert"></p>
+    <div class="dlg-actions">
+      <button type="button" class="btn ghost" id="dlgCancel">Cancel</button>
+      <button type="submit" class="btn" id="dlgOk"></button>
+    </div>
+  </form>
+</dialog>
+
+</body>
+</html>

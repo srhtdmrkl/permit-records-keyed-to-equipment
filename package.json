@@ -1,0 +1,17 @@
+{
+  "name": "permit-records-keyed-to-equipment",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node app/serve.mjs",
+    "test": "node tests/run.mjs",
+    "test:pg": "bash tests/run.sh"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
+  }
+}
