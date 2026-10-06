@@ -1,6 +1,6 @@
 # Permit records keyed to equipment
 
-A working permit register and the database schema behind it, for the article *Your Permit System Files Documents. The Hazard Sits on the Equipment.*
+A working permit register and the database schema behind it, for the article [Your Permit System Files Documents. The Hazard Sits on the Equipment](https://serhat.bio/insights/permit-records-keyed-to-equipment).
 
 It puts four ideas from the article into code:
 
